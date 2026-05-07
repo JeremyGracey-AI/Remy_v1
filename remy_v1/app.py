@@ -161,6 +161,28 @@ def create_app():
             "groundedness against the source. Part of the "
             "[À la carte](https://alacarte.jeremygracey.ai/) reading-group toolkit."
         )
+        gr.Markdown(
+            "**Architectural lineage**\n"
+            "Remy v1 adapts two recent ideas from the agent-systems literature:\n\n"
+            "- **Code World Models for General Game Playing** (Lehrach et al., 2025) — "
+            "typed code components refined via tree search and unit-test verification. "
+            "The six recipe-card types are the reading-group analog. "
+            "[arXiv:2510.04542](https://arxiv.org/abs/2510.04542)\n"
+            "- **AutoHarness** (Tang et al., 2024) — code-as-harness pattern where the "
+            "LLM produces typed action verifiers. The analogy-groundedness rule is the "
+            "small-scale analog of `is_legal_action`. "
+            "[Paper](https://openreview.net/pdf?id=o863gX6DxA)",
+            elem_classes=["remy-lineage"],
+        )
+        gr.HTML(
+            "<style>"
+            ".remy-lineage{border:1px solid rgba(0,0,0,0.08);border-radius:10px;"
+            "padding:12px 16px;background:var(--background-fill-secondary,#f8fafc);"
+            "margin:4px 0 12px;font-size:13px;line-height:1.5;}"
+            ".remy-lineage p:first-child{margin-top:0;}"
+            ".remy-lineage ul{margin:6px 0 0;padding-left:20px;}"
+            "</style>"
+        )
         with gr.Row():
             with gr.Column(scale=1):
                 paper_title = gr.Textbox(label="Paper title", value=DEFAULT_TITLE)
