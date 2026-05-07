@@ -116,6 +116,17 @@ def test_analogy_still_passes_grounding_for_ijepa():
     assert not result["banned_hit"]
 
 
+def test_analogy_grounding_is_excerpt_conditioned():
+    # eval should pass on excerpts whose vocabulary is unrelated to I-JEPA,
+    # because grounded keywords are now derived from the excerpt itself.
+    for excerpt in (DIFFUSION_EXCERPT, RAG_EXCERPT):
+        cards = generate_all_cards(_ctx(excerpt))
+        analogy = next(c for c in cards if c.card_type == CardType.analogy)
+        result = evaluate_analogy_groundedness(analogy, excerpt)
+        assert result["passed"], (excerpt, result)
+        assert result["keyword_overlap"] >= 2
+
+
 def test_session_context_shape_is_unchanged():
     ctx = _ctx(IJEPA_EXCERPT)
     # original fields must still construct and round-trip
