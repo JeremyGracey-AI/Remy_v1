@@ -117,13 +117,45 @@ def _write_filed_jsonl(cards) -> str:
     return str(out)
 
 
-DEFAULT_TITLE = "I-JEPA"
-DEFAULT_EXCERPT = (
-    "The model learns a representation by predicting masked context "
-    "in feature space rather than reconstructing pixels."
-)
-DEFAULT_QUESTION = "Is this generative?"
-DEFAULT_GOAL = "Clarify the difference between representation prediction and pixel generation."
+PAPER_DEFAULTS = {
+    "cwm": {
+        "title": "Code World Models for General Game Playing",
+        "excerpt": "We propose to use LLMs as induction engines that can leverage their prior knowledge to map a small amount of observed trajectory gameplay data, plus a textual game description, into plausible world models, represented as Python code, using iterative code refinement methods. We call the result of this process a Code World Model (CWM).",
+        "audience_question": "How is this different from just prompting an LLM to play the game directly?",
+        "speaker_goal": "Clarify that the LLM is producing a typed world model, not acting as a policy.",
+    },
+    "autoharness": {
+        "title": "AutoHarness",
+        "excerpt": "We formulate the generation of this harness as a search problem over the space of programs. Unlike simple iterative prompting, we employ a tree search guided by Thompson sampling to efficiently explore the landscape of potential harnesses. The LLM acts as a mutation operator, proposing refinements to the code based on feedback from execution.",
+        "audience_question": "Is this just chain-of-thought with extra steps?",
+        "speaker_goal": "Show that the LLM is moved out of the action loop and into a typed code-generation loop.",
+    },
+    "jepa": {
+        "title": "I-JEPA / V-JEPA",
+        "excerpt": "Joint-Embedding Architectures (JEAs) learn to output similar embeddings for compatible inputs and dissimilar embeddings for incompatible inputs. The main challenge with JEAs is representation collapse, which is prevented by predicting in feature space rather than pixel space.",
+        "audience_question": "How is this different from a generative model?",
+        "speaker_goal": "Clarify the difference between representation prediction and pixel generation.",
+    },
+    "custom": {
+        "title": "",
+        "excerpt": "",
+        "audience_question": "",
+        "speaker_goal": "",
+    },
+}
+
+PAPER_CHOICES = [
+    ("Code World Models for General Game Playing (Lehrach et al., 2025)", "cwm"),
+    ("AutoHarness (Tang et al., 2024)", "autoharness"),
+    ("I-JEPA / V-JEPA (Assran et al.)", "jepa"),
+    ("Custom paper...", "custom"),
+]
+
+DEFAULT_PAPER_KEY = "cwm"
+DEFAULT_TITLE = PAPER_DEFAULTS[DEFAULT_PAPER_KEY]["title"]
+DEFAULT_EXCERPT = PAPER_DEFAULTS[DEFAULT_PAPER_KEY]["excerpt"]
+DEFAULT_QUESTION = PAPER_DEFAULTS[DEFAULT_PAPER_KEY]["audience_question"]
+DEFAULT_GOAL = PAPER_DEFAULTS[DEFAULT_PAPER_KEY]["speaker_goal"]
 DEFAULT_LEVEL = "mixed"
 
 
@@ -185,10 +217,34 @@ def create_app():
         )
         with gr.Row():
             with gr.Column(scale=1):
-                paper_title = gr.Textbox(label="Paper title", value=DEFAULT_TITLE)
+                paper_select = gr.Dropdown(
+                    label="Paper",
+                    choices=PAPER_CHOICES,
+                    value=DEFAULT_PAPER_KEY,
+                )
+                paper_title = gr.Textbox(
+                    label="Paper title",
+                    value=DEFAULT_TITLE,
+                    visible=(DEFAULT_PAPER_KEY == "custom"),
+                )
                 excerpt = gr.Textbox(label="Paper excerpt", lines=8, value=DEFAULT_EXCERPT)
                 audience_question = gr.Textbox(label="Audience question", value=DEFAULT_QUESTION)
                 speaker_goal = gr.Textbox(label="Speaker goal", value=DEFAULT_GOAL)
+
+                def _on_paper_change(key: str):
+                    d = PAPER_DEFAULTS.get(key, PAPER_DEFAULTS["custom"])
+                    return (
+                        gr.update(value=d["title"], visible=(key == "custom")),
+                        gr.update(value=d["excerpt"]),
+                        gr.update(value=d["audience_question"]),
+                        gr.update(value=d["speaker_goal"]),
+                    )
+
+                paper_select.change(
+                    _on_paper_change,
+                    inputs=[paper_select],
+                    outputs=[paper_title, excerpt, audience_question, speaker_goal],
+                )
                 audience_level = gr.Dropdown(
                     label="Audience level",
                     choices=["novice", "mixed", "expert"],
