@@ -1,0 +1,16 @@
+{
+  "session_id": "s2",
+  "paper_id": "p2",
+  "paper_title": "Code World Models",
+  "audience_level": "expert",
+  "cards": [
+    {
+      "card_id": "c7",
+      "card_type": "speaker_phrasing",
+      "title": "Speaker phrasing",
+      "body": "The important move is that the language model writes typed code around the agent rather than acting directly inside the control loop.",
+      "intent_line": "Reframe the architecture in one sentence.",
+      "state": "edited"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "session_id": "s1",
+  "paper_id": "p1",
+  "paper_title": "I-JEPA",
+  "audience_level": "mixed",
+  "cards": [
+    {
+      "card_id": "c1",
+      "card_type": "analogy",
+      "title": "Analogy",
+      "body": "Think of masked representation prediction as filling in missing semantic context rather than reconstructing raw pixels.",
+      "intent_line": "Clarify the method without drift.",
+      "state": "new"
+    },
+    {
+      "card_id": "c3",
+      "card_type": "common_stumble",
+      "title": "Common stumble",
+      "body": "Do not confuse feature-space prediction with direct pixel generation.",
+      "intent_line": "Prevent the most likely wrong inference.",
+      "state": "new"
+    }
+  ]
+}
